@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app-ichijo
+#    environment:
+#      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#      MYSQL_DATABASE: ${MYSQL_DATABASE}
+#      MYSQL_USER: ${MYSQL_USER}
+#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ../laravel:/var/www/html
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx-ichijo
+    ports:
+      - "18080:80"
+    volumes:
+      - ../laravel:/var/www/html
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-ichijo
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      # 設定ファイルを紐づける
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      # データはプロジェクトのディレクトリに入れておきたいが
+      # 権限の問題で出来ないので、名前付きボリュームを使う
+      - mysqldata-ichijo:/var/lib/mysql
+      # ログ
+      - ./mysql/logs:/var/log/mysql
+    ports:
+      - "3306:3306"
+volumes:
+  mysqldata-ichijo:
