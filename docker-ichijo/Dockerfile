@@ -1,5 +1,7 @@
 FROM php:8.3.3-fpm
 
+EXPOSE 5173
+
 COPY ./php/php.ini /usr/local/etc/php/
 
 RUN apt-get update

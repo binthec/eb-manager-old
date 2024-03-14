@@ -6,15 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app-ichijo
-#    environment:
-#      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-#      MYSQL_DATABASE: ${MYSQL_DATABASE}
-#      MYSQL_USER: ${MYSQL_USER}
-#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ../laravel:/var/www/html
     ports:
-      - "9000:9000"
+      # vite を見るようにする
+      - "5173:5173"
     depends_on:
       - mysql
   nginx:
